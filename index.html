@@ -1,0 +1,208 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Google Drive</title>
+    <link rel="icon" href="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" type="image/png">
+    <style>
+
+        body {
+            background-color: #f0f0f0;
+            color: black;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin: 10px auto;
+        }
+
+        button {
+            display: block;
+            width: 200px;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Open With:</h3>
+        <button onclick="BlobWindow()">blob:https</button>
+        <button id="aboutBlankBtn">about:blank</button>
+        <button id="dataUrlBtn">data:text</button>
+        <div id="popup" class="popup">URL copied to clipboard!</div>
+    </div>
+
+    <script>
+
+        async function fetchDataTextKrypton() {
+            const response = await fetch('https://raw.githubusercontent.com/EvanTeSecond/StorageCode/refs/heads/Krypton-Deployment/index.html');
+            if (!response.ok) {
+                alert("Failed to fetch URL.");
+                return;
+            }
+            return response.text();
+        }
+
+        document.getElementById("aboutBlankBtn").addEventListener("click", () => {
+            let newBlankTab = window.open("about:blank", "_blank");
+            if (newBlankTab) {
+                newBlankTab.onload = () => {
+                    newBlankTab.document.title = "Google";
+                    let link = newBlankTab.document.createElement("link");
+                    link.rel = "icon";
+                    link.href = "https://i.ibb.co/gZG0HCZq/google.png";
+                    newBlankTab.document.head.appendChild(link);
+                    newBlankTab.document.body.style.margin = "0";
+                    newBlankTab.document.body.style.height = "100vh";
+                    newBlankTab.document.body.style.padding = "0";
+                    newBlankTab.document.body.style.overflow = "hidden";
+
+                    let iframe = document.createElement("iframe");
+                    iframe.style.border = "none";
+                    iframe.style.width = "100%";
+                    iframe.style.height = "100%";
+                    iframe.style.margin = '0';
+                    iframe.referrerpolicy = "no-referrer";
+                    iframe.allow = "fullscreen";
+                    iframe.src = iframeUrl;
+                    newBlankTab.document.body.appendChild(iframe);
+                    setTimeout(() => {
+                        window.location.replace("https://www.google.com/");
+                    }, 2000);
+                };
+            } else {
+                alert("Allow pop-ups at the right of the search bar. Then reload the page.");
+            }
+        });
+
+        function BlobWindow() {
+            const htmlContent = `
+            <!DOCTYPE html>
+            <html>
+                <body>
+                </body>
+            </html>
+            `;
+
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const blobUrl = URL.createObjectURL(blob);
+
+            let newBlankTab = window.open(blobUrl, "_blank");
+
+            if (newBlankTab) {
+                newBlankTab.onload = () => {
+                    newBlankTab.document.title = "Google";
+                    let link = newBlankTab.document.createElement("link");
+                    link.rel = "icon";
+                    link.href = "https://i.ibb.co/gZG0HCZq/google.png";
+                    newBlankTab.document.head.appendChild(link);
+                    newBlankTab.document.body.style.margin = "0";
+                    newBlankTab.document.body.style.height = "100vh";
+                    newBlankTab.document.body.style.padding = "0";
+                    newBlankTab.document.body.style.overflow = "hidden";
+
+                    let iframe = document.createElement("iframe");
+                    iframe.style.border = "none";
+                    iframe.style.width = "100%";
+                    iframe.style.height = "100%";
+                    iframe.style.margin = '0';
+                    iframe.referrerpolicy = "no-referrer";
+                    iframe.allow = "fullscreen";
+                    iframe.src = iframeUrl;
+                    newBlankTab.document.body.appendChild(iframe);
+                    setTimeout(() => {
+                        window.location.replace("https://www.google.com/");
+                    }, 2000);
+                };
+            } else {
+                alert("Allow pop-ups at the right of the search bar. Then reload the page.");
+            }
+        }
+
+        document.getElementById("dataUrlBtn").addEventListener("click", async () => {
+            const dataTextKrypton = await fetchDataTextKrypton();
+            if (dataTextKrypton) {
+                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(dataTextKrypton)}`;
+                copyToClipboard(fullUrl);
+                showPopup("URL copied to clipboard!");
+            }
+        });
+
+        function showPopup(message) {
+            const popup = document.getElementById("popup");
+            popup.textContent = message;
+            popup.style.display = "block";
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+        }
+
+        window.onload = () => {
+            if (autoLaunchToggle.checked) {
+                const launchType = launchOption.checked ? "about" : "blob";
+                if (launchType === "blob") {
+                    BlobWindow();
+                } else {
+                    document.getElementById("aboutBlankBtn").click();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
