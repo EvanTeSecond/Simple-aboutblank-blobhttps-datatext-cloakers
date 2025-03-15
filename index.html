@@ -75,7 +75,7 @@
 
     <script>
 
-        async function fetchDataTextKrypton() {
+        async function fetchDataText() {
             const response = await fetch('https://raw.githubusercontent.com/EvanTeSecond/Simple-aboutblank-blobhttps-datatext-cloakers/refs/heads/main/index.html');
             if (!response.ok) {
                 alert("Failed to fetch URL.");
@@ -149,9 +149,9 @@
         }
 
         document.getElementById("dataUrlBtn").addEventListener("click", async () => {
-            const dataTextKrypton = await fetchDataTextKrypton();
-            if (dataTextKrypton) {
-                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(dataTextKrypton)}`;
+            const dataText = await fetchDataText();
+            if (dataText) {
+                const fullUrl = `data:text/html;charset=utf-8,${encodeURIComponent(dataText)}`;
                 copyToClipboard(fullUrl);
                 showPopup("URL copied to clipboard!");
             }
